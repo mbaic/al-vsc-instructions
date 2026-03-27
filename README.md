@@ -21,7 +21,7 @@ AL-specific best practices covering:
 
 ## Installation
 
-Choose one location based on your setup:
+VS Code - chose one location based on your setup:
 
 ### Option 1: Project-Level (Recommended for Team)
 Add both files to your AL project's `.github/instructions/` folder:
@@ -41,6 +41,6 @@ C:\Users\<username>\AppData\Roaming\Code\User\prompts\
 
 ## Usage
 
-These files guide Claude Code in understanding your development standards. Place them in your preferred location and Claude will apply these guidelines when working with your AL project.
+These files guide agent in understanding your development standards. Place them in your preferred location and agent will apply these guidelines when working with your AL project.
 
 **Start simple, evolve based on your team's experience and needs.**
