@@ -58,6 +58,6 @@ Single source of truth. Extract duplicate code only after 3+ identical occurrenc
 ## Error Handling
 
 - **Labels**: All user-facing messages must use label variables, never hardcoded text
-- **Try Functions**: Use for error handling and rollback scenarios
+- **Try Functions**: Use only for read/validation/parsing logic with no database writes — they catch runtime errors and return `false`, but do not roll back any partial writes
 - **Error Messages**: Provide meaningful context to users
 - **Logging**: Add custom logging only when explicitly requested

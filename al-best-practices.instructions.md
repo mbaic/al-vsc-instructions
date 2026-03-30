@@ -127,19 +127,35 @@ end;
 ```
 
 ### TryFunction Pattern
+Use `[TryFunction]` only for operations that do **not** perform any database writes (no Insert, Modify, Delete, or codeunit runs that trigger CRUD). TryFunctions catch runtime errors and return `false` — they do not roll back any partial writes.
+
+Valid use cases: parsing/conversion, external service calls, validation logic with no side effects.
+
 ```al
+// ✅ CORRECT - TryFunction for parsing/validation only (no CRUD)
+[TryFunction]
+local procedure TryParseAmount(RawText: Text; var ParsedAmount: Decimal)
+begin
+    // Pure evaluation — no database writes
+    ParsedAmount := ParseDecimal(RawText);  // throws on invalid input
+end;
+
+procedure ImportAmount(RawText: Text): Decimal
+var
+    ParsedAmount: Decimal;
+begin
+    if not TryParseAmount(RawText, ParsedAmount) then
+        Error('Invalid amount format: %1', RawText);
+    exit(ParsedAmount);
+end;
+
+// ❌ WRONG - TryFunction wrapping CRUD or posting operations
 [TryFunction]
 local procedure TryPostDocument(var SalesHeader: Record "Sales Header")
 var
     SalesPost: Codeunit "Sales-Post";
 begin
-    SalesPost.Run(SalesHeader);
-end;
-
-procedure PostWithHandling(var SalesHeader: Record "Sales Header")
-begin
-    if not TryPostDocument(SalesHeader) then
-        Error('Unable to post. Check document and retry.');
+    SalesPost.Run(SalesHeader);  // NOT allowed — triggers database writes
 end;
 ```
 
@@ -168,6 +184,6 @@ procedure CalculateBalance(CustomerNo: Code[20]): Decimal
 - [ ] SetLoadFields before SetRange
 - [ ] Filters applied before loops
 - [ ] No cognitive complexity ≥ 15
-- [ ] TryFunctions for error rollback scenarios
+- [ ] TryFunctions used only for read/validation logic — never wrapping CRUD operations
 - [ ] Error messages are user-friendly
 - [ ] No compilation warnings or errors
